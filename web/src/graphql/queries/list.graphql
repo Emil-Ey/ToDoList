@@ -1,0 +1,5 @@
+query List($id: Int!) {
+	list(id: $id) {
+		...RegularList
+	}
+}

@@ -1,0 +1,15 @@
+mutation CreateTask($listId: Int!, $text: String!) {
+	createTask(listId: $listId, text: $text) {
+		errors {
+			...TaskError
+		}
+		task {
+			id
+			text
+			done
+			list {
+				...RegularList
+			}
+		}
+	}
+}

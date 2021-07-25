@@ -1,0 +1,5 @@
+mutation CreateList($title: String!, $desc: String!) {
+	createList(title: $title, desc: $desc) {
+		...RegularList
+	}
+}

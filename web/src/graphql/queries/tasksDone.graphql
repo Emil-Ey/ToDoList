@@ -1,0 +1,3 @@
+query TasksNotDone($listId: Int!) {
+	tasksNotDone(listId: $listId)
+}

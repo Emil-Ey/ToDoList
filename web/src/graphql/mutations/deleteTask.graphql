@@ -1,0 +1,3 @@
+mutation DeleteTask($listId: Int!, $id: Int!) {
+	deleteTask(listId: $listId, id: $id)
+}

@@ -1,0 +1,4 @@
+fragment TaskError on FieldError1 {
+	field
+	message
+}

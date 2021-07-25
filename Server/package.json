@@ -1,0 +1,51 @@
+{
+  "name": "To-Do-List-App",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "watch": "tsc -w",
+    "dev": "nodemon dist/index.js",
+    "start": "node dist/index.js",
+    "start2": "ts-node src/index.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/connect-redis": "^0.0.16",
+    "@types/cors": "^2.8.10",
+    "@types/express": "^4.17.12",
+    "@types/express-session": "^1.17.3",
+    "@types/ioredis": "^4.26.6",
+    "@types/node": "^15.14.1",
+    "@types/redis": "^2.8.30",
+    "@types/uuid": "^8.3.1",
+    "nodemon": "^2.0.9",
+    "ts-node": "^9.1.1",
+    "typescript": "^4.3.5"
+  },
+  "dependencies": {
+    "@mapbox/node-pre-gyp": "^1.0.5",
+    "apollo-server-express": "2",
+    "argon2": "^0.28.2",
+    "bcrypt": "^5.0.1",
+    "class-validator": "^0.13.1",
+    "commonjs-everywhere": "^0.9.7",
+    "connect-redis": "^6.0.0",
+    "cors": "^2.8.5",
+    "dataloader": "^2.0.0",
+    "express": "^4.17.1",
+    "express-session": "^1.17.2",
+    "graphql": "^15.5.1",
+    "ioredis": "^4.27.6",
+    "node-gyp": "^8.1.0",
+    "node-pre-gyp": "^0.17.0",
+    "nodemailer": "^6.6.2",
+    "pg": "^8.6.0",
+    "reflect-metadata": "^0.1.13",
+    "type-graphql": "^1.1.1",
+    "typeorm": "^0.2.34",
+    "uuid": "^8.3.2"
+  }
+}

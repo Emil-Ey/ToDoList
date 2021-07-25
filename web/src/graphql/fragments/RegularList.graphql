@@ -1,0 +1,11 @@
+fragment RegularList on List {
+	id
+	title
+	desc
+	tasksNo
+	creator {
+		id
+		username
+		email
+	}
+}

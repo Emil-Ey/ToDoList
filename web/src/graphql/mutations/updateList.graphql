@@ -1,0 +1,5 @@
+mutation UpdateList($id: Int!, $title: String!, $desc: String!) {
+	updateList(id: $id, title: $title, desc: $desc) {
+		...RegularList
+	}
+}

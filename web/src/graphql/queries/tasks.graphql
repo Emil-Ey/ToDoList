@@ -1,0 +1,11 @@
+query Tasks($listId: Int!) {
+	tasks(listId: $listId) {
+		id
+		listId
+		text
+		done
+		list {
+			...RegularList
+		}
+	}
+}
