@@ -33,6 +33,7 @@ const typeorm_1 = require("typeorm");
 const uuid_1 = require("uuid");
 const User_1 = require("../entity/User");
 const argon2_1 = __importDefault(require("argon2"));
+const sendEmail_1 = require("../utils/sendEmail");
 let FieldError = class FieldError {
 };
 __decorate([
@@ -90,6 +91,10 @@ let UserResolver = class UserResolver {
                         username: options.username,
                         email: options.email.toLowerCase(),
                         password: hashedPassword,
+                        bgColorL: "gray.200",
+                        buColorL: "teal",
+                        bgColorD: "gray.800",
+                        buColorD: "teal",
                     },
                 ])
                     .returning("*")
@@ -171,12 +176,17 @@ let UserResolver = class UserResolver {
     }
     forgotPassword(email, { redis }) {
         return __awaiter(this, void 0, void 0, function* () {
-            const user = yield User_1.User.findOne({ where: { email } });
+            const lowerCaseEmail = email.toLowerCase();
+            const user = yield User_1.User.findOne({ where: { email: lowerCaseEmail } });
             if (!user) {
                 return true;
             }
             const token = uuid_1.v4();
+            console.log(token);
             redis.set(constants_1.FORGET_PASSWORD_PREFIX + token, user.id, "ex", 1000 * 60 * 60 * 24 * 2);
+            console.log("1");
+            sendEmail_1.sendEmail(email, `Click this link to change your password: <a href="http://localhost:3000/change-password/${token}">Reset password</a>`);
+            console.log("2");
             return true;
         });
     }
@@ -209,7 +219,7 @@ let UserResolver = class UserResolver {
                     errors: [
                         {
                             field: "token",
-                            message: "token expired",
+                            message: "Token expired",
                         },
                     ],
                 };

@@ -1,16 +1,16 @@
 import { HamburgerIcon } from "@chakra-ui/icons";
 import {
-	useColorMode,
-	Switch,
-	IconButton,
-	Text,
-	Flex,
 	Box,
+	Flex,
 	HStack,
+	IconButton,
 	Menu,
 	MenuButton,
 	MenuItem,
 	MenuList,
+	Switch,
+	Text,
+	useColorMode,
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import React from "react";
@@ -21,11 +21,31 @@ export const DarkModeSwitch = () => {
 	const router = useRouter();
 	const { colorMode, toggleColorMode } = useColorMode();
 	const isDark = colorMode === "dark";
-	const [{ fetching: logoutFetching }, logout] = useLogoutMutation();
+	const [, logout] = useLogoutMutation();
 	const [{ data, fetching }] = useMeQuery({
 		pause: isServer(),
 	});
-	const bColor = isDark ? undefined : "blackAlpha";
+
+	if (fetching) {
+		return (
+			<Flex position="fixed" top="1rem" right="1rem">
+				<Box mr={4}>
+					{isDark ? (
+						<Text color="white">Dark Mode</Text>
+					) : (
+						<Text color="teal">Light Mode</Text>
+					)}
+				</Box>
+				<Switch
+					colorScheme="teal"
+					isChecked={isDark}
+					onChange={toggleColorMode}
+				/>
+				Loading...
+			</Flex>
+		);
+	}
+
 	return (
 		<>
 			<Flex position="fixed" top="1rem" right="1rem">
@@ -69,23 +89,10 @@ export const DarkModeSwitch = () => {
 								</MenuItem>
 								<MenuItem
 									p={4}
-									onClick={() => {
-										if (!isServer()) {
-											router.push(
-												`/customize-theme/${data.me.id}`
-											);
-										}
-									}}
-								>
-									Customize Theme
-								</MenuItem>
-								<MenuItem
-									p={4}
 									onClick={async () => {
 										await logout();
 										router.push("/");
 									}}
-									loading={logoutFetching}
 								>
 									Log out
 								</MenuItem>

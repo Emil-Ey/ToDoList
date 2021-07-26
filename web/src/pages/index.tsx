@@ -1,4 +1,12 @@
-import { Box, Button, Flex, Heading, Link, Stack } from "@chakra-ui/react";
+import {
+	Box,
+	Button,
+	Flex,
+	Heading,
+	Link,
+	Stack,
+	Text,
+} from "@chakra-ui/react";
 import { Form, Formik } from "formik";
 import { withUrqlClient } from "next-urql";
 import NextLink from "next/link";
@@ -9,7 +17,7 @@ import { DarkModeSwitch } from "../components/DarkModeSwitch";
 import { Footer } from "../components/Footer";
 import { InputField } from "../components/InputField";
 import Wrapper from "../components/Wrapper";
-import { useLoginMutation } from "../generated/graphql";
+import { useLoginMutation, useMeQuery } from "../generated/graphql";
 import { createUrqlClient } from "../utils/createUrqlClient";
 import { isServer } from "../utils/isServer";
 import { toErrorMap } from "../utils/toErrorMap";
@@ -17,6 +25,7 @@ import { toErrorMap } from "../utils/toErrorMap";
 const Index = () => {
 	const router = useRouter();
 	const [, login] = useLoginMutation();
+
 	return (
 		<Container height="auto" minHeight="100vh">
 			<Wrapper variant="small">

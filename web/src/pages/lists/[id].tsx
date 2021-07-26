@@ -15,7 +15,6 @@ import {
 } from "@chakra-ui/react";
 import { Form, Formik } from "formik";
 import { withUrqlClient } from "next-urql";
-//import { useRouter } from "next/router";
 import React, { useState } from "react";
 import { Container } from "../../components/Container";
 import { DarkModeSwitch } from "../../components/DarkModeSwitch";
@@ -30,14 +29,15 @@ import {
 import { createUrqlClient } from "../../utils/createUrqlClient";
 import { useGetIntId } from "../../utils/useGetIntId";
 import NextLink from "next/link";
+import { toErrorMap2 } from "../../utils/toErrorMap2";
+import { useRouter } from "next/router";
 
 const Lists = ({}) => {
-	const [error, setError] = useState(false);
 	const [, deleteList] = useDeleteListMutation();
 	const [, createList] = useCreateListMutation();
 	const { colorMode } = useColorMode();
 	const borderColor = { light: "black", dark: "gray.100" };
-	//const router = useRouter();
+	const router = useRouter();
 	const userId = useGetIntId();
 	const variables = {
 		userId: userId,
@@ -53,18 +53,14 @@ const Lists = ({}) => {
 						<Box textAlign="center" mb="10%">
 							<Heading size="2xl">To-Do List App</Heading>
 						</Box>
-						<Text fontSize="30">
-							You are trying to get the lists of another user.
-						</Text>
+						<Text fontSize="30">Something went wrong.</Text>
 						<br />
 						<Text fontSize="20">
-							If this is you, then please login as this user.
-							<br />
-							Rembember to log out before logging in if you are
-							logged in.
+							Please check if you are logged in as the correct
+							user.
 						</Text>
 						<Button
-							//onClick={() => router.push("/")}
+							onClick={() => router.push("/")}
 							mt={5}
 							colorScheme="teal"
 						>
@@ -90,7 +86,7 @@ const Lists = ({}) => {
 						<br />
 						<Text fontSize="20">Please try again later.</Text>
 						<Button
-							//onClick={() => router.push("/")}
+							onClick={() => router.push("/")}
 							mt={5}
 							colorScheme="teal"
 						>
@@ -129,7 +125,10 @@ const Lists = ({}) => {
 						<Box textAlign="center" mb="10%">
 							<Heading size="2xl">To-Do List App</Heading>
 						</Box>
-						<Text fontSize="20">Could not find the lists</Text>
+						<Text fontSize="20">
+							Could not find the lists. <br />
+							Please try again later.
+						</Text>
 					</Box>
 					<DarkModeSwitch />
 				</Wrapper>
@@ -207,13 +206,17 @@ const Lists = ({}) => {
 				)}
 				<Formik
 					initialValues={{ title: "", desc: "" }}
-					onSubmit={async (values) => {
-						const { error } = await createList(values);
+					onSubmit={async (values, { setErrors }) => {
+						const response = await createList(values);
 
-						if (error?.message.includes("logged in")) {
-							// Not logged in
-							setError(true);
-						} else {
+						if (response.data?.createList.errors) {
+							// Create error
+							setErrors(
+								toErrorMap2(response.data.createList.errors)
+							);
+							return;
+						} else if (response.data?.createList.list) {
+							// created successfully
 						}
 					}}
 				>

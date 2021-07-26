@@ -6,17 +6,22 @@ import {
 	Ctx,
 	Field,
 	FieldResolver,
+	Int,
 	Mutation,
 	ObjectType,
 	Query,
 	Resolver,
 	Root,
+	UseMiddleware,
 } from "type-graphql";
 import { getConnection } from "typeorm";
 import { v4 } from "uuid";
 import { User } from "../entity/User";
 import { MyContext } from "../types";
 import argon2 from "argon2";
+import { sendEmail } from "../utils/sendEmail";
+import { isAuth } from "../middleware/isAuth";
+import { convertColors } from "../utils/colorConvert";
 
 @ObjectType()
 class FieldError {
@@ -70,6 +75,7 @@ export class UserResolver {
 
 		const hashedPassword = await argon2.hash(options.password);
 		let user: any;
+		// TODO ADD THE NEW FIELDS (WHAT IS THE DEFAULT)?
 		try {
 			const result = await getConnection()
 				.createQueryBuilder()
@@ -80,6 +86,10 @@ export class UserResolver {
 						username: options.username,
 						email: options.email.toLowerCase(),
 						password: hashedPassword,
+						bgColorL: "gray.200",
+						buColorL: "teal",
+						bgColorD: "gray.800",
+						buColorD: "teal",
 					},
 				])
 				.returning("*")
@@ -177,26 +187,27 @@ export class UserResolver {
 		@Arg("email") email: string,
 		@Ctx() { redis }: MyContext
 	) {
-		const user = await User.findOne({ where: { email } });
+		const lowerCaseEmail = email.toLowerCase();
+		const user = await User.findOne({ where: { email: lowerCaseEmail } });
 		if (!user) {
 			// Email not in the DB
 			return true;
 		}
 
 		const token = v4();
+		console.log(token);
 		redis.set(
 			FORGET_PASSWORD_PREFIX + token,
 			user.id,
 			"ex",
 			1000 * 60 * 60 * 24 * 2 // 2 days
 		);
-
-		// TODO: CHECK VIDEO
-		// sendEmail(
-		// 	email,
-		// 	`<a href="http://localhost:3000/change-password/${token}">rest password</a>`
-		// );
-
+		console.log("1");
+		sendEmail(
+			email,
+			`Click this link to change your password: <a href="http://localhost:3000/change-password/${token}">Reset password</a>`
+		);
+		console.log("2");
 		return true;
 	}
 
@@ -237,7 +248,7 @@ export class UserResolver {
 				errors: [
 					{
 						field: "token",
-						message: "token expired",
+						message: "Token expired",
 					},
 				],
 			};

@@ -1,5 +1,10 @@
 mutation CreateList($title: String!, $desc: String!) {
 	createList(title: $title, desc: $desc) {
-		...RegularList
+		errors {
+			...ListError
+		}
+		list {
+			...RegularList
+		}
 	}
 }

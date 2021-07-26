@@ -1,7 +1,7 @@
 import { Box, Button, Flex, Heading, Stack, Text } from "@chakra-ui/react";
 import { Form, Formik } from "formik";
 import { withUrqlClient } from "next-urql";
-//import { useRouter } from "next/router";
+import { useRouter } from "next/router";
 import React from "react";
 import { BackButton } from "../../../components/BackButton";
 import { Container } from "../../../components/Container";
@@ -17,7 +17,7 @@ import { createUrqlClient } from "../../../utils/createUrqlClient";
 import { useGetIntId } from "../../../utils/useGetIntId";
 
 const editLists = () => {
-	//const router = useRouter();
+	const router = useRouter();
 	const intId = useGetIntId();
 	const [{ data, fetching }] = useListQuery({
 		pause: intId === -1,
@@ -56,7 +56,7 @@ const editLists = () => {
 						</Box>
 						<Text fontSize="20">Could not find the list</Text>
 						<Button
-							//onClick={() => router.back()}
+							onClick={() => router.back()}
 							mt={5}
 							colorScheme="teal"
 						>
@@ -85,7 +85,7 @@ const editLists = () => {
 					onSubmit={async (values, { setErrors }) => {
 						await updateList({ id: intId, ...values });
 
-						//router.back();
+						router.back();
 					}}
 				>
 					{({ isSubmitting }) => (

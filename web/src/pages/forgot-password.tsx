@@ -1,79 +1,74 @@
-import { Box, Button, Flex, Heading, Link, Stack } from "@chakra-ui/react";
+import { Box, Button, Flex, Heading, Link, Text } from "@chakra-ui/react";
 import { Form, Formik } from "formik";
 import { withUrqlClient } from "next-urql";
 import NextLink from "next/link";
-import React from "react";
+import React, { useState } from "react";
+import { BackButton } from "../components/BackButton";
 import { Container } from "../components/Container";
 import { DarkModeSwitch } from "../components/DarkModeSwitch";
 import { Footer } from "../components/Footer";
 import { InputField } from "../components/InputField";
 import Wrapper from "../components/Wrapper";
-import { useLoginMutation } from "../generated/graphql";
+import { useForgotPasswordMutation } from "../generated/graphql";
 import { createUrqlClient } from "../utils/createUrqlClient";
-import { isServer } from "../utils/isServer";
-import { toErrorMap } from "../utils/toErrorMap";
 
-const Index = () => {
-	//const router = useRouter();
-	const [, login] = useLoginMutation();
+const forgotPassword = () => {
+	const [complete, setComplete] = useState(false);
+	const [, forgotPassword] = useForgotPasswordMutation();
 	return (
 		<Container height="auto" minHeight="100vh">
+			<BackButton />
 			<Wrapper variant="small">
 				<Box textAlign="center" mb="10%">
 					<Heading size="2xl">To-Do List App</Heading>
 				</Box>
 				<Formik
-					initialValues={{ usernameOrEmail: "", password: "" }}
-					onSubmit={async (values, { setErrors }) => {
-						const response = await login(values);
-						if (response.data?.login.errors) {
-							// Login error
-							setErrors(toErrorMap(response.data.login.errors));
-							return;
-						} else if (response.data?.login.user) {
-							// Login successfully
-							if (!isServer()) {
-								// router.push(
-								// 	`/lists/${response.data.login.user.id}`
-								// );
-							}
-						}
+					initialValues={{ email: "" }}
+					onSubmit={async (values) => {
+						await forgotPassword(values);
+						setComplete(true);
 					}}
 				>
-					{({ isSubmitting }) => (
-						<Form>
-							<Heading mb={5}>Login</Heading>
-							<Stack spacing={4}>
+					{({ isSubmitting }) =>
+						complete ? (
+							<>
+								<Box>
+									<Text textAlign="center" fontSize="20">
+										If an account exists with that email,
+										<br />
+										then you should have received an email.
+										<br />
+										<br />
+										If not then please try again.
+									</Text>
+								</Box>
+							</>
+						) : (
+							<Form>
+								<Heading mb={5}>Get a new Password</Heading>
 								<InputField
-									name="usernameOrEmail"
-									placeholder="username or email"
-									label="Username Or Email"
+									name="email"
+									placeholder="email"
+									label="Email"
 								/>
-								<InputField
-									name="password"
-									placeholder="password"
-									label="Password"
-									type="password"
-								/>
-							</Stack>
-							<Flex mt={2}>
-								<NextLink href="/forgot-password">
-									<Link ml={"auto"}>Forgot Password?</Link>
-								</NextLink>
-								<NextLink href="/register">
-									<Link ml={2}>Or create a user</Link>
-								</NextLink>
-							</Flex>
-							<Button
-								mt={0}
-								type="submit"
-								isLoading={isSubmitting}
-								colorScheme="teal"
-							>
-								Login
-							</Button>
-						</Form>
-					)}
+								<Flex mt={2}>
+									<Text ml={"auto"}>
+										<NextLink href="/login">
+											<Link>Remembered it?</Link>
+										</NextLink>
+									</Text>
+								</Flex>
+								<Button
+									mt={4}
+									type="submit"
+									isLoading={isSubmitting}
+									colorScheme="teal"
+								>
+									Send Link
+								</Button>
+							</Form>
+						)
+					}
 				</Formik>
 				<DarkModeSwitch />
 			</Wrapper>
@@ -82,4 +77,4 @@ const Index = () => {
 	);
 };
 
-export default withUrqlClient(createUrqlClient, { ssr: true })(Index);
+export default withUrqlClient(createUrqlClient)(forgotPassword);

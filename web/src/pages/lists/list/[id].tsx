@@ -15,7 +15,7 @@ import {
 } from "@chakra-ui/react";
 import { Formik, Form } from "formik";
 import { withUrqlClient } from "next-urql";
-//import { useRouter } from "next/router";
+import { useRouter } from "next/router";
 import React from "react";
 import { BackButton } from "../../../components/BackButton";
 import { Container } from "../../../components/Container";
@@ -41,7 +41,7 @@ const Lists = ({}) => {
 	const { colorMode } = useColorMode();
 	const borderColor = { light: "black", dark: "gray.100" };
 	const buttonColor = { light: "blackAlpha", dark: "whiteAlpha" };
-	//const router = useRouter();
+	const router = useRouter();
 	const listId = useGetIntId();
 	const variables = {
 		listId: listId,
@@ -64,19 +64,14 @@ const Lists = ({}) => {
 						<Box textAlign="center" mb="10%">
 							<Heading size="2xl">To-Do List App</Heading>
 						</Box>
-						<Text fontSize="30">
-							You are trying to get the tasks of another users
-							list.
-						</Text>
+						<Text fontSize="30">Something went wrong.</Text>
 						<br />
 						<Text fontSize="20">
-							If this is you, then please login as this user.
-							<br />
-							Rembember to log out before logging in if you are
-							logged in.
+							Please check if you are logged in as the correct
+							user.
 						</Text>
 						<Button
-							//onClick={() => router.push("/")}
+							onClick={() => router.push("/")}
 							mt={5}
 							colorScheme="teal"
 						>
@@ -103,7 +98,7 @@ const Lists = ({}) => {
 						<br />
 						<Text fontSize="20">Please try again later.</Text>
 						<Button
-							//onClick={() => router.push("/")}
+							onClick={() => router.push("/")}
 							mt={5}
 							colorScheme="teal"
 						>
@@ -144,7 +139,9 @@ const Lists = ({}) => {
 						<Box textAlign="center" mb="10%">
 							<Heading size="2xl">To-Do List App</Heading>
 						</Box>
-						<Text fontSize="20">Could not find the tasks</Text>
+						<Text fontSize="20">
+							Could not find the tasks. Please try again later.
+						</Text>
 					</Box>
 					<DarkModeSwitch />
 				</Wrapper>
@@ -236,7 +233,7 @@ const Lists = ({}) => {
 							);
 							return;
 						} else if (response.data?.createTask.task) {
-							// create successfully
+							// created successfully
 						}
 					}}
 				>

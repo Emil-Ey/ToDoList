@@ -9,6 +9,7 @@ import {
 	DeleteListMutationVariables,
 	RegisterMutation,
 	LogoutMutation,
+	ChangeSettingsMutation,
 } from "../generated/graphql";
 
 const invalidateAllLists = (cache: Cache) => {
@@ -75,6 +76,23 @@ export const createUrqlClient = (ssrExchange: any, ctx: any) => {
 								{ query: MeDocument },
 								_result,
 								() => ({ me: null })
+							);
+						},
+
+						changeSettings: (_result, args, cache, info) => {
+							betterUpdateQuery<ChangeSettingsMutation, MeQuery>(
+								cache,
+								{ query: MeDocument },
+								_result,
+								(result, query) => {
+									if (result.changeSettings.errors) {
+										return query;
+									} else {
+										return {
+											me: result.changeSettings.user,
+										};
+									}
+								}
 							);
 						},
 

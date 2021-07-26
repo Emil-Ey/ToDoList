@@ -17,6 +17,7 @@ import { createUserLoader } from "./utils/createUserLoader";
 import { createListLoader } from "./utils/createListLoader";
 import { TaskResolver } from "./resolvers/TaskResolver";
 import { ListResolver } from "./resolvers/ListResolver";
+import { sendEmail } from "./utils/sendEmail";
 
 const main = async () => {
 	const conn = await createConnection({
@@ -30,9 +31,6 @@ const main = async () => {
 		entities: [User, List, Task],
 	});
 	await conn.runMigrations();
-
-	// Delete all posts from the db
-	// await User.delete({});
 
 	const app = express();
 

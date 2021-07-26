@@ -89,23 +89,23 @@ export class ListResolver {
 	}
 
 	// Mutations
-	@Mutation(() => List)
+	@Mutation(() => ListResponse)
 	@UseMiddleware(isAuth)
 	async createList(
 		@Arg("title") title: string,
 		@Arg("desc") desc: string,
 		@Ctx() { req }: MyContext
 	) {
-		// if (!title) {
-		// 	return {
-		// 		errors: [
-		// 			{
-		// 				field: "title",
-		// 				message: "The list must have a title",
-		// 			},
-		// 		],
-		// 	};
-		// }
+		if (!title) {
+			return {
+				errors: [
+					{
+						field: "title",
+						message: "The list must have a title",
+					},
+				],
+			};
+		}
 
 		return {
 			list: List.create({

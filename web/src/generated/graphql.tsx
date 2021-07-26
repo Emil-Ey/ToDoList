@@ -26,6 +26,12 @@ export type FieldError1 = {
   message: Scalars['String'];
 };
 
+export type FieldError2 = {
+  __typename?: 'FieldError2';
+  field: Scalars['String'];
+  message: Scalars['String'];
+};
+
 export type List = {
   __typename?: 'List';
   id: Scalars['Float'];
@@ -38,6 +44,12 @@ export type List = {
   creator: User;
 };
 
+export type ListResponse = {
+  __typename?: 'ListResponse';
+  errors?: Maybe<Array<FieldError2>>;
+  list?: Maybe<List>;
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   register: UserResponse;
@@ -48,7 +60,7 @@ export type Mutation = {
   createTask: TaskResponse;
   deleteTask: Scalars['Boolean'];
   vote: Scalars['Boolean'];
-  createList: List;
+  createList: ListResponse;
   updateList?: Maybe<List>;
   deleteList: Scalars['Boolean'];
 };
@@ -163,6 +175,10 @@ export type User = {
   id: Scalars['Float'];
   username: Scalars['String'];
   email: Scalars['String'];
+  bgColorL: Scalars['String'];
+  buColorL: Scalars['String'];
+  bgColorD: Scalars['String'];
+  buColorD: Scalars['String'];
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
 };
@@ -178,6 +194,11 @@ export type UsernamePasswordInput = {
   username: Scalars['String'];
   password: Scalars['String'];
 };
+
+export type ListErrorFragment = (
+  { __typename?: 'FieldError2' }
+  & Pick<FieldError2, 'field' | 'message'>
+);
 
 export type RegularListFragment = (
   { __typename?: 'List' }
@@ -214,6 +235,21 @@ export type UserErrorFragment = (
   & Pick<FieldError, 'field' | 'message'>
 );
 
+export type ChangePasswordMutationVariables = Exact<{
+  token: Scalars['String'];
+  newPassword: Scalars['String'];
+  newPassword1: Scalars['String'];
+}>;
+
+
+export type ChangePasswordMutation = (
+  { __typename?: 'Mutation' }
+  & { changePassword: (
+    { __typename?: 'UserResponse' }
+    & RegularUserResponseFragment
+  ) }
+);
+
 export type CreateListMutationVariables = Exact<{
   title: Scalars['String'];
   desc: Scalars['String'];
@@ -223,8 +259,14 @@ export type CreateListMutationVariables = Exact<{
 export type CreateListMutation = (
   { __typename?: 'Mutation' }
   & { createList: (
-    { __typename?: 'List' }
-    & RegularListFragment
+    { __typename?: 'ListResponse' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'FieldError2' }
+      & ListErrorFragment
+    )>>, list?: Maybe<(
+      { __typename?: 'List' }
+      & RegularListFragment
+    )> }
   ) }
 );
 
@@ -271,6 +313,16 @@ export type DeleteTaskMutationVariables = Exact<{
 export type DeleteTaskMutation = (
   { __typename?: 'Mutation' }
   & Pick<Mutation, 'deleteTask'>
+);
+
+export type ForgotPasswordMutationVariables = Exact<{
+  email: Scalars['String'];
+}>;
+
+
+export type ForgotPasswordMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'forgotPassword'>
 );
 
 export type LoginMutationVariables = Exact<{
@@ -398,6 +450,12 @@ export type TasksNotDoneQuery = (
   & Pick<Query, 'tasksNotDone'>
 );
 
+export const ListErrorFragmentDoc = gql`
+    fragment ListError on FieldError2 {
+  field
+  message
+}
+    `;
 export const RegularListFragmentDoc = gql`
     fragment RegularList on List {
   id
@@ -440,13 +498,34 @@ export const TaskErrorFragmentDoc = gql`
   message
 }
     `;
+export const ChangePasswordDocument = gql`
+    mutation ChangePassword($token: String!, $newPassword: String!, $newPassword1: String!) {
+  changePassword(
+    token: $token
+    newPassword: $newPassword
+    newPassword1: $newPassword1
+  ) {
+    ...RegularUserResponse
+  }
+}
+    ${RegularUserResponseFragmentDoc}`;
+
+export function useChangePasswordMutation() {
+  return Urql.useMutation<ChangePasswordMutation, ChangePasswordMutationVariables>(ChangePasswordDocument);
+};
 export const CreateListDocument = gql`
     mutation CreateList($title: String!, $desc: String!) {
   createList(title: $title, desc: $desc) {
-    ...RegularList
+    errors {
+      ...ListError
+    }
+    list {
+      ...RegularList
+    }
   }
 }
-    ${RegularListFragmentDoc}`;
+    ${ListErrorFragmentDoc}
+${RegularListFragmentDoc}`;
 
 export function useCreateListMutation() {
   return Urql.useMutation<CreateListMutation, CreateListMutationVariables>(CreateListDocument);
@@ -490,6 +569,15 @@ export const DeleteTaskDocument = gql`
 
 export function useDeleteTaskMutation() {
   return Urql.useMutation<DeleteTaskMutation, DeleteTaskMutationVariables>(DeleteTaskDocument);
+};
+export const ForgotPasswordDocument = gql`
+    mutation ForgotPassword($email: String!) {
+  forgotPassword(email: $email)
+}
+    `;
+
+export function useForgotPasswordMutation() {
+  return Urql.useMutation<ForgotPasswordMutation, ForgotPasswordMutationVariables>(ForgotPasswordDocument);
 };
 export const LoginDocument = gql`
     mutation Login($usernameOrEmail: String!, $password: String!) {

@@ -28,6 +28,22 @@ export class User extends BaseEntity {
 	@Column()
 	password!: string;
 
+	@Field()
+	@Column()
+	bgColorL!: string;
+
+	@Field()
+	@Column()
+	buColorL!: string;
+
+	@Field()
+	@Column()
+	bgColorD!: string;
+
+	@Field()
+	@Column()
+	buColorD!: string;
+
 	@OneToMany(() => List, (list) => list.creator)
 	lists: List[];
 

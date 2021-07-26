@@ -1,0 +1,4 @@
+fragment ListError on FieldError2 {
+	field
+	message
+}

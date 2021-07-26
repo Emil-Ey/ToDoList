@@ -88,6 +88,16 @@ let ListResolver = class ListResolver {
     }
     createList(title, desc, { req }) {
         return __awaiter(this, void 0, void 0, function* () {
+            if (!title) {
+                return {
+                    errors: [
+                        {
+                            field: "title",
+                            message: "The list must have a title",
+                        },
+                    ],
+                };
+            }
             return {
                 list: List_1.List.create({
                     title,
@@ -161,7 +171,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], ListResolver.prototype, "lists", null);
 __decorate([
-    type_graphql_1.Mutation(() => List_1.List),
+    type_graphql_1.Mutation(() => ListResponse),
     type_graphql_1.UseMiddleware(isAuth_1.isAuth),
     __param(0, type_graphql_1.Arg("title")),
     __param(1, type_graphql_1.Arg("desc")),
