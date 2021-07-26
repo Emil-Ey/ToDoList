@@ -1,12 +1,4 @@
-import {
-	Box,
-	Button,
-	Flex,
-	Heading,
-	Link,
-	Stack,
-	Text,
-} from "@chakra-ui/react";
+import { Box, Button, Flex, Heading, Link, Stack } from "@chakra-ui/react";
 import { Form, Formik } from "formik";
 import { withUrqlClient } from "next-urql";
 import NextLink from "next/link";
@@ -19,7 +11,6 @@ import { InputField } from "../components/InputField";
 import Wrapper from "../components/Wrapper";
 import { useLoginMutation, useMeQuery } from "../generated/graphql";
 import { createUrqlClient } from "../utils/createUrqlClient";
-import { isServer } from "../utils/isServer";
 import { toErrorMap } from "../utils/toErrorMap";
 
 const Index = () => {
@@ -42,11 +33,9 @@ const Index = () => {
 							return;
 						} else if (response.data?.login.user) {
 							// Login successfully
-							if (!isServer()) {
-								router.push(
-									`/lists/${response.data.login.user.id}`
-								);
-							}
+							router.push(
+								`/lists/${response.data.login.user.id}`
+							);
 						}
 					}}
 				>

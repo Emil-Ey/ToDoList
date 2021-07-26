@@ -91,10 +91,6 @@ let UserResolver = class UserResolver {
                         username: options.username,
                         email: options.email.toLowerCase(),
                         password: hashedPassword,
-                        bgColorL: "gray.200",
-                        buColorL: "teal",
-                        bgColorD: "gray.800",
-                        buColorD: "teal",
                     },
                 ])
                     .returning("*")

@@ -26,26 +26,6 @@ export const DarkModeSwitch = () => {
 		pause: isServer(),
 	});
 
-	if (fetching) {
-		return (
-			<Flex position="fixed" top="1rem" right="1rem">
-				<Box mr={4}>
-					{isDark ? (
-						<Text color="white">Dark Mode</Text>
-					) : (
-						<Text color="teal">Light Mode</Text>
-					)}
-				</Box>
-				<Switch
-					colorScheme="teal"
-					isChecked={isDark}
-					onChange={toggleColorMode}
-				/>
-				Loading...
-			</Flex>
-		);
-	}
-
 	return (
 		<>
 			<Flex position="fixed" top="1rem" right="1rem">

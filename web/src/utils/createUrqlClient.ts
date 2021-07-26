@@ -79,23 +79,6 @@ export const createUrqlClient = (ssrExchange: any, ctx: any) => {
 							);
 						},
 
-						changeSettings: (_result, args, cache, info) => {
-							betterUpdateQuery<ChangeSettingsMutation, MeQuery>(
-								cache,
-								{ query: MeDocument },
-								_result,
-								(result, query) => {
-									if (result.changeSettings.errors) {
-										return query;
-									} else {
-										return {
-											me: result.changeSettings.user,
-										};
-									}
-								}
-							);
-						},
-
 						login: (_result, args, cache, info) => {
 							betterUpdateQuery<LoginMutation, MeQuery>(
 								cache,

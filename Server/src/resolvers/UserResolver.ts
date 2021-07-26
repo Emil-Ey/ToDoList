@@ -20,8 +20,6 @@ import { User } from "../entity/User";
 import { MyContext } from "../types";
 import argon2 from "argon2";
 import { sendEmail } from "../utils/sendEmail";
-import { isAuth } from "../middleware/isAuth";
-import { convertColors } from "../utils/colorConvert";
 
 @ObjectType()
 class FieldError {
@@ -86,10 +84,6 @@ export class UserResolver {
 						username: options.username,
 						email: options.email.toLowerCase(),
 						password: hashedPassword,
-						bgColorL: "gray.200",
-						buColorL: "teal",
-						bgColorD: "gray.800",
-						buColorD: "teal",
 					},
 				])
 				.returning("*")

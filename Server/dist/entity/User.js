@@ -40,26 +40,6 @@ __decorate([
     __metadata("design:type", String)
 ], User.prototype, "password", void 0);
 __decorate([
-    type_graphql_1.Field(),
-    typeorm_1.Column(),
-    __metadata("design:type", String)
-], User.prototype, "bgColorL", void 0);
-__decorate([
-    type_graphql_1.Field(),
-    typeorm_1.Column(),
-    __metadata("design:type", String)
-], User.prototype, "buColorL", void 0);
-__decorate([
-    type_graphql_1.Field(),
-    typeorm_1.Column(),
-    __metadata("design:type", String)
-], User.prototype, "bgColorD", void 0);
-__decorate([
-    type_graphql_1.Field(),
-    typeorm_1.Column(),
-    __metadata("design:type", String)
-], User.prototype, "buColorD", void 0);
-__decorate([
     typeorm_1.OneToMany(() => List_1.List, (list) => list.creator),
     __metadata("design:type", Array)
 ], User.prototype, "lists", void 0);

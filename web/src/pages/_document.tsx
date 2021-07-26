@@ -7,7 +7,7 @@ export default class Document extends NextDocument {
 		return (
 			<Html>
 				<Head>
-					<link rel="shortcut icon" href="../images/favicon.ico" />
+					<link rel="icon" href="../images/favicon.ico?v=2" />
 				</Head>
 				<body>
 					{/* Make Color mode to persists when you refresh the page. */}
