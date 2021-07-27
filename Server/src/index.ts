@@ -1,4 +1,5 @@
 import "reflect-metadata";
+import "dotenv-safe/config";
 import { COOKIE_NAME, __prod__ } from "./constants";
 import express from "express";
 import { ApolloServer } from "apollo-server-express";
@@ -17,16 +18,13 @@ import { createUserLoader } from "./utils/createUserLoader";
 import { createListLoader } from "./utils/createListLoader";
 import { TaskResolver } from "./resolvers/TaskResolver";
 import { ListResolver } from "./resolvers/ListResolver";
-import { sendEmail } from "./utils/sendEmail";
 
 const main = async () => {
 	const conn = await createConnection({
 		type: "postgres",
-		database: "ToDoListApp",
-		username: "postgres",
-		password: "postgres",
+		url: process.env.DATABASE_URL,
 		logging: true,
-		synchronize: true,
+		//synchronize: true,
 		migrations: [path.join(__dirname, "./migrations/*")],
 		entities: [User, List, Task],
 	});
@@ -35,11 +33,11 @@ const main = async () => {
 	const app = express();
 
 	let RedisStore = connectRedis(session);
-	let redis = new Redis();
-
+	let redis = new Redis(process.env.REDIS_URL);
+	app.set("proxy", 1);
 	app.use(
 		cors({
-			origin: "http://localhost:3000",
+			origin: process.env.CORS_ORIGIN,
 			credentials: true,
 		})
 	);
@@ -57,10 +55,10 @@ const main = async () => {
 				httpOnly: true,
 				sameSite: "lax", // csrf
 				secure: __prod__, // cookie only works in https
-				domain: __prod__ ? ".codeponder.com" : undefined,
+				domain: __prod__ ? ".eybye-todo.xyz" : undefined,
 			},
 			saveUninitialized: false,
-			secret: "qwertyjaoglknsdf",
+			secret: process.env.SESSION_SECRET,
 			resave: false,
 		})
 	);
@@ -84,8 +82,9 @@ const main = async () => {
 		cors: false,
 	});
 
-	app.listen(4000, () => {
-		console.log("server started on localhost:4000");
+	const port = process.env.PORT;
+	app.listen(parseInt(port), () => {
+		console.log(`server started on localhost:${port}`);
 	});
 };
 

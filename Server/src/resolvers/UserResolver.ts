@@ -1,4 +1,4 @@
-import { COOKIE_NAME, FORGET_PASSWORD_PREFIX } from "../constants";
+import { COOKIE_NAME, FORGET_PASSWORD_PREFIX, __prod__ } from "../constants";
 import UsernamePasswordInput from "../utils/usernamePasswordInput";
 import { validateRegister } from "../utils/validateRegister";
 import {
@@ -196,12 +196,17 @@ export class UserResolver {
 			"ex",
 			1000 * 60 * 60 * 24 * 2 // 2 days
 		);
-		console.log("1");
-		sendEmail(
-			email,
-			`Click this link to change your password: <a href="http://localhost:3000/change-password/${token}">Reset password</a>`
-		);
-		console.log("2");
+
+		__prod__
+			? sendEmail(
+					email,
+					`Click this link to change your password: <a href="http://eybye-todo.xyz/change-password/${token}">Reset password</a>`
+			  )
+			: sendEmail(
+					email,
+					`Click this link to change your password: <a href="http://localhost:3000/change-password/${token}">Reset password</a>`
+			  );
+
 		return true;
 	}
 

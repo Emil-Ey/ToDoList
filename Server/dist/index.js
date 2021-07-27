@@ -13,6 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 require("reflect-metadata");
+require("dotenv-safe/config");
 const constants_1 = require("./constants");
 const express_1 = __importDefault(require("express"));
 const apollo_server_express_1 = require("apollo-server-express");
@@ -34,20 +35,18 @@ const ListResolver_1 = require("./resolvers/ListResolver");
 const main = () => __awaiter(void 0, void 0, void 0, function* () {
     const conn = yield typeorm_1.createConnection({
         type: "postgres",
-        database: "ToDoListApp",
-        username: "postgres",
-        password: "postgres",
+        url: process.env.DATABASE_URL,
         logging: true,
-        synchronize: true,
         migrations: [path_1.default.join(__dirname, "./migrations/*")],
         entities: [User_1.User, List_1.List, Task_1.Task],
     });
     yield conn.runMigrations();
     const app = express_1.default();
     let RedisStore = connect_redis_1.default(express_session_1.default);
-    let redis = new ioredis_1.default();
+    let redis = new ioredis_1.default(process.env.REDIS_URL);
+    app.set("proxy", 1);
     app.use(cors_1.default({
-        origin: "http://localhost:3000",
+        origin: process.env.CORS_ORIGIN,
         credentials: true,
     }));
     app.use(express_session_1.default({
@@ -62,10 +61,10 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
             httpOnly: true,
             sameSite: "lax",
             secure: constants_1.__prod__,
-            domain: constants_1.__prod__ ? ".codeponder.com" : undefined,
+            domain: constants_1.__prod__ ? ".eybye-todo.xyz" : undefined,
         },
         saveUninitialized: false,
-        secret: "qwertyjaoglknsdf",
+        secret: process.env.SESSION_SECRET,
         resave: false,
     }));
     const apolloServer = new apollo_server_express_1.ApolloServer({
@@ -85,8 +84,9 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
         app,
         cors: false,
     });
-    app.listen(4000, () => {
-        console.log("server started on localhost:4000");
+    const port = process.env.PORT;
+    app.listen(parseInt(port), () => {
+        console.log(`server started on localhost:${port}`);
     });
 });
 main().catch((err) => {

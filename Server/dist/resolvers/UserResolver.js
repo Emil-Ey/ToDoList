@@ -180,9 +180,9 @@ let UserResolver = class UserResolver {
             const token = uuid_1.v4();
             console.log(token);
             redis.set(constants_1.FORGET_PASSWORD_PREFIX + token, user.id, "ex", 1000 * 60 * 60 * 24 * 2);
-            console.log("1");
-            sendEmail_1.sendEmail(email, `Click this link to change your password: <a href="http://localhost:3000/change-password/${token}">Reset password</a>`);
-            console.log("2");
+            constants_1.__prod__
+                ? sendEmail_1.sendEmail(email, `Click this link to change your password: <a href="http://eybye-todo.xyz/change-password/${token}">Reset password</a>`)
+                : sendEmail_1.sendEmail(email, `Click this link to change your password: <a href="http://localhost:3000/change-password/${token}">Reset password</a>`);
             return true;
         });
     }
