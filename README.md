@@ -6,7 +6,7 @@ Check it out:
 https://eybye-todo.xyz/
 
 ## Tech
-Made using GraphQL, TypeScript, React, PostgresQL, Redis, Node, TypeOrm, Urql, Express, and Chakra UI.
+Made using GraphQL, TypeScript, React, Next.js, PostgresQL, Redis, Node, TypeOrm, Urql, Express, and Chakra UI.
 
 Backend deployed on DigitalOcean.
 Frontend deployed on Vercel.
