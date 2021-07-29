@@ -13,4 +13,4 @@ Backend deployed on DigitalOcean.
 Frontend deployed on Vercel.
 
 ## Be Aware
-As I did not want to setup an actual email provider You should be aware of the fact that when inputting an existing on the forgot-password page you will be redirected directly to change  the password. Therefore as a result of this anyone who knows your email can change your password.
+As I did not want to setup an actual email provider you should be aware of the fact that when inputting an existing on the forgot-password page you will be redirected directly to change  the password. Therefore as a result of this anyone who knows your email can change your password.
