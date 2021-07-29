@@ -40,12 +40,12 @@ const forgotPassword = () => {
 							<>
 								<Box>
 									<Text textAlign="center" fontSize="20">
-										If an account exists with that email,
+										An account with that email does not
+										exist.
 										<br />
-										then you should have received an email.
 										<br />
-										<br />
-										If not then please try again.
+										Please check if you have entered the
+										correct email.
 									</Text>
 								</Box>
 							</>
