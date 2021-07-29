@@ -2,6 +2,7 @@ import { Box, Button, Flex, Heading, Link, Text } from "@chakra-ui/react";
 import { Form, Formik } from "formik";
 import { withUrqlClient } from "next-urql";
 import NextLink from "next/link";
+import router from "next/router";
 import React, { useState } from "react";
 import { BackButton } from "../components/BackButton";
 import { Container } from "../components/Container";
@@ -25,8 +26,13 @@ const forgotPassword = () => {
 				<Formik
 					initialValues={{ email: "" }}
 					onSubmit={async (values) => {
-						await forgotPassword(values);
-						setComplete(true);
+						const response = await forgotPassword(values);
+						if (response.data.forgotPassword.token) {
+							const token = response.data.forgotPassword.token;
+							router.push(`/change-password/${token}`);
+						} else {
+							setComplete(true);
+						}
 					}}
 				>
 					{({ isSubmitting }) =>
@@ -53,7 +59,7 @@ const forgotPassword = () => {
 								/>
 								<Flex mt={2}>
 									<Text ml={"auto"}>
-										<NextLink href="/login">
+										<NextLink href="/">
 											<Link>Remembered it?</Link>
 										</NextLink>
 									</Text>
@@ -64,7 +70,7 @@ const forgotPassword = () => {
 									isLoading={isSubmitting}
 									colorScheme="teal"
 								>
-									Send Link
+									Change Password
 								</Button>
 							</Form>
 						)

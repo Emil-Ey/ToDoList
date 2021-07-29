@@ -43,10 +43,7 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
     yield conn.runMigrations();
     const app = express_1.default();
     let RedisStore = connect_redis_1.default(express_session_1.default);
-    let redis;
-    constants_1.__prod__
-        ? (redis = new ioredis_1.default(process.env.REDIS_URL))
-        : (redis = new ioredis_1.default());
+    const redis = new ioredis_1.default(process.env.REDIS_URL);
     app.set("trust proxy", 1);
     app.use(cors_1.default({
         origin: process.env.CORS_ORIGIN,

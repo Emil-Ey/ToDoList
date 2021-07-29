@@ -33,10 +33,9 @@ const main = async () => {
 	const app = express();
 
 	let RedisStore = connectRedis(session);
-	let redis;
-	__prod__
-		? (redis = new Redis(process.env.REDIS_URL))
-		: (redis = new Redis());
+
+	const redis = new Redis(process.env.REDIS_URL);
+	//const redis = new Redis();
 	app.set("trust proxy", 1);
 	app.use(
 		cors({

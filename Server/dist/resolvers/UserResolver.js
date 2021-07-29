@@ -33,7 +33,6 @@ const typeorm_1 = require("typeorm");
 const uuid_1 = require("uuid");
 const User_1 = require("../entity/User");
 const argon2_1 = __importDefault(require("argon2"));
-const sendEmail_1 = require("../utils/sendEmail");
 let FieldError = class FieldError {
 };
 __decorate([
@@ -60,6 +59,19 @@ __decorate([
 UserResponse = __decorate([
     type_graphql_1.ObjectType()
 ], UserResponse);
+let ForgotPasswordResponse = class ForgotPasswordResponse {
+};
+__decorate([
+    type_graphql_1.Field(() => String, { nullable: true }),
+    __metadata("design:type", String)
+], ForgotPasswordResponse.prototype, "token", void 0);
+__decorate([
+    type_graphql_1.Field(() => Boolean, { nullable: true }),
+    __metadata("design:type", Boolean)
+], ForgotPasswordResponse.prototype, "real", void 0);
+ForgotPasswordResponse = __decorate([
+    type_graphql_1.ObjectType()
+], ForgotPasswordResponse);
 let UserResolver = class UserResolver {
     email(user, { req }) {
         if (req.session.userId === user.id) {
@@ -175,15 +187,11 @@ let UserResolver = class UserResolver {
             const lowerCaseEmail = email.toLowerCase();
             const user = yield User_1.User.findOne({ where: { email: lowerCaseEmail } });
             if (!user) {
-                return true;
+                return { real: true };
             }
             const token = uuid_1.v4();
-            console.log(token);
             redis.set(constants_1.FORGET_PASSWORD_PREFIX + token, user.id, "ex", 1000 * 60 * 60 * 24 * 2);
-            constants_1.__prod__
-                ? sendEmail_1.sendEmail(email, `Click this link to change your password: <a href="http://eybye-todo.xyz/change-password/${token}">Reset password</a>`)
-                : sendEmail_1.sendEmail(email, `Click this link to change your password: <a href="http://localhost:3000/change-password/${token}">Reset password</a>`);
-            return true;
+            return { token, real: true };
         });
     }
     changePassword(token, newPassword, newPassword1, { redis, req }) {
@@ -280,7 +288,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], UserResolver.prototype, "logout", null);
 __decorate([
-    type_graphql_1.Mutation(() => Boolean),
+    type_graphql_1.Mutation(() => ForgotPasswordResponse),
     __param(0, type_graphql_1.Arg("email")),
     __param(1, type_graphql_1.Ctx()),
     __metadata("design:type", Function),

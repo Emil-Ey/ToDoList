@@ -32,6 +32,12 @@ export type FieldError2 = {
   message: Scalars['String'];
 };
 
+export type ForgotPasswordResponse = {
+  __typename?: 'ForgotPasswordResponse';
+  token?: Maybe<Scalars['String']>;
+  real?: Maybe<Scalars['Boolean']>;
+};
+
 export type List = {
   __typename?: 'List';
   id: Scalars['Float'];
@@ -55,7 +61,7 @@ export type Mutation = {
   register: UserResponse;
   login: UserResponse;
   logout: Scalars['Boolean'];
-  forgotPassword: Scalars['Boolean'];
+  forgotPassword: ForgotPasswordResponse;
   changePassword: UserResponse;
   createTask: TaskResponse;
   deleteTask: Scalars['Boolean'];
@@ -175,10 +181,6 @@ export type User = {
   id: Scalars['Float'];
   username: Scalars['String'];
   email: Scalars['String'];
-  bgColorL: Scalars['String'];
-  buColorL: Scalars['String'];
-  bgColorD: Scalars['String'];
-  buColorD: Scalars['String'];
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
 };
@@ -322,7 +324,10 @@ export type ForgotPasswordMutationVariables = Exact<{
 
 export type ForgotPasswordMutation = (
   { __typename?: 'Mutation' }
-  & Pick<Mutation, 'forgotPassword'>
+  & { forgotPassword: (
+    { __typename?: 'ForgotPasswordResponse' }
+    & Pick<ForgotPasswordResponse, 'token' | 'real'>
+  ) }
 );
 
 export type LoginMutationVariables = Exact<{
@@ -572,7 +577,10 @@ export function useDeleteTaskMutation() {
 };
 export const ForgotPasswordDocument = gql`
     mutation ForgotPassword($email: String!) {
-  forgotPassword(email: $email)
+  forgotPassword(email: $email) {
+    token
+    real
+  }
 }
     `;
 

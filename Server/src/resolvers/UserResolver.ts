@@ -38,6 +38,15 @@ class UserResponse {
 	user?: User;
 }
 
+@ObjectType()
+class ForgotPasswordResponse {
+	@Field(() => String, { nullable: true })
+	token?: string;
+
+	@Field(() => Boolean, { nullable: true })
+	real?: Boolean;
+}
+
 @Resolver(User)
 export class UserResolver {
 	// Field Resolvers
@@ -176,7 +185,7 @@ export class UserResolver {
 		);
 	}
 
-	@Mutation(() => Boolean)
+	@Mutation(() => ForgotPasswordResponse)
 	async forgotPassword(
 		@Arg("email") email: string,
 		@Ctx() { redis }: MyContext
@@ -185,11 +194,10 @@ export class UserResolver {
 		const user = await User.findOne({ where: { email: lowerCaseEmail } });
 		if (!user) {
 			// Email not in the DB
-			return true;
+			return { real: true };
 		}
 
 		const token = v4();
-		console.log(token);
 		redis.set(
 			FORGET_PASSWORD_PREFIX + token,
 			user.id,
@@ -197,17 +205,7 @@ export class UserResolver {
 			1000 * 60 * 60 * 24 * 2 // 2 days
 		);
 
-		__prod__
-			? sendEmail(
-					email,
-					`Click this link to change your password: <a href="http://eybye-todo.xyz/change-password/${token}">Reset password</a>`
-			  )
-			: sendEmail(
-					email,
-					`Click this link to change your password: <a href="http://localhost:3000/change-password/${token}">Reset password</a>`
-			  );
-
-		return true;
+		return { token, real: true };
 	}
 
 	@Mutation(() => UserResponse)
